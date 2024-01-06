@@ -1,7 +1,29 @@
-import React from "react";
+import React, { useRef, useState } from "react";
 import Header from "./Header";
+import { checkValidData } from "../utils/validate";
 
 const Login = () => {
+  const [isSigninPage, setIsSigninPage] = useState(true);
+  const [errorMessage, setErrorMessage] = useState(null);
+
+  const name = useRef(null);
+  const email = useRef(null);
+  const password = useRef(null);
+
+  const toggleSignInContoller = () => {
+    setIsSigninPage(!isSigninPage);
+  };
+
+  const handleButtonClick = () => {
+    // validate email and password
+    const message = checkValidData(
+      email?.current?.value,
+      password?.current?.value
+    );
+    setErrorMessage(message);
+    // SignIn / SignUp
+  };
+
   return (
     <div>
       <Header />
@@ -19,21 +41,41 @@ const Login = () => {
           e.preventDefault();
         }}
       >
-        <h1 className="font-bold text-3xl py-4">Sign In</h1>
+        <h1 className="font-bold text-3xl py-4">
+          {isSigninPage ? "Sign In" : "Sign Up"}
+        </h1>
+        {!isSigninPage && (
+          <input
+            ref={name}
+            type="text"
+            placeholder="Full Name "
+            className="p-4 my-2 w-full bg-gray-700 rounded-lg"
+          />
+        )}
         <input
+          ref={email}
           type="text"
           placeholder="Email address "
           className="p-4 my-2 w-full bg-gray-700 rounded-lg"
         />
         <input
+          ref={password}
           type="password"
           placeholder="Password"
           className="p-4 my-2 w-full bg-gray-700 rounded-lg"
         />
-        <button className="p-4 my-6 w-full bg-red-700 rounded-lg">
-          Sign Up
+        <p className="text-red-500 text-xl">{errorMessage}</p>
+        <button
+          className="p-4 my-6 w-full bg-red-700 rounded-lg"
+          onClick={handleButtonClick}
+        >
+          {isSigninPage ? "Sign In" : "Sign Up"}
         </button>
-        <p className="p-4">New to Movies GPT? Sign Up Now</p>
+        <p className="p-4 cursor-pointer" onClick={toggleSignInContoller}>
+          {isSigninPage
+            ? "New to Movies GPT? Sign Up Now"
+            : "Already a user? Sign In"}
+        </p>
       </form>
     </div>
   );
